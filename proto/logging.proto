@@ -1,0 +1,22 @@
+syntax = "proto3";
+package logging;
+
+message LogEntry {
+  string service = 1;
+  string instanceId = 2;
+  int64 timestamp = 3; // unix millis
+  string level = 4; // INFO, WARN, ERROR
+  string message = 5;
+  map<string,string> attrs = 6;
+  double latencyMs = 7;
+}
+
+message LogAck {
+  bool ok = 1;
+  string id = 2;
+}
+
+service LogIngest {
+  rpc SendLog(LogEntry) returns (LogAck);
+  rpc SendLogs(stream LogEntry) returns (LogAck);
+}

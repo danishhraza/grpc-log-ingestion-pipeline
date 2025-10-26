@@ -1,0 +1,13 @@
+{
+  "mappings": {
+    "properties": {
+      "service": { "type": "keyword" },
+      "instanceId": { "type": "keyword" },
+      "timestamp": { "type": "date" },
+      "level": { "type": "keyword" },
+      "message": { "type": "text" },
+      "attrs": { "type": "object", "enabled": true },
+      "latencyMs": { "type": "double" }
+    }
+  }
+}

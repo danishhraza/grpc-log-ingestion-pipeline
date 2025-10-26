@@ -1,0 +1,22 @@
+{
+  "name": "microservice-generator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --import=ts-node/esm src/index.ts",
+    "dev": "nodemon --exec \"node --import=ts-node/esm src/index.ts\""
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.0",
+    "@grpc/proto-loader": "^0.7.7",
+    "dotenv": "^16.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^10.0.0",
+    "nodemon": "^3.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
