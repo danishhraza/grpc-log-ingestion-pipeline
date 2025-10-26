@@ -4,72 +4,46 @@ A simple distributed log analytics setup using gRPC, RabbitMQ, Elasticsearch, an
 
 1. Overview
 
-This project simulates logs from multiple microservices, collects them through a gRPC collector, and indexes them into Elasticsearch for visualization in Kibana.
+gRPC Service — Receives structured logs from client microservices.
 
-Architecture
-[microservice-generator] → (gRPC) → [collector] → (RabbitMQ) → [worker] → (bulk) → [Elasticsearch] → [Kibana]
+RabbitMQ — Buffers and distributes log messages between the collector and workers.
 
+Elasticsearch — Stores indexed logs for search and analysis.
 
-microservice-generator: generates synthetic logs from random services and sends them via gRPC.
+Kibana — Provides a UI to view and filter logs.
 
-collector: receives logs, validates them, and publishes them to RabbitMQ.
+2. Flow
 
-worker: consumes logs from RabbitMQ and bulk indexes them into Elasticsearch.
+Microservices send logs via gRPC (SendLog / SendLogs).
 
-Elasticsearch + Kibana: store, search, and visualize logs.
+Collector pushes incoming logs to RabbitMQ.
 
-⚙️ Setup
-Prerequisites
+Workers consume messages, format them, and bulk-index into Elasticsearch.
 
-Node.js v18+
+Logs appear in Kibana dashboards (filtered via data views).
 
-RabbitMQ running on amqp://localhost:5672
+3. Setup
 
-Elasticsearch & Kibana running on http://localhost:9200 and http://localhost:5601
+# Start dependencies
+docker-compose up -d
 
-Environment
+# Run collector
+npm run start:collector
 
-Each service uses environment variables:
-
-RABBIT_URL=amqp://localhost:5672
-ES_URL=http://localhost:9200
-
-Run Services
-
-In three terminals:
-
-# 1. Start the collector
-cd services/collector
-npm start
-
-# 2. Start the worker
-cd services/worker
-npm start
-
-# 3. Start the microservice log generator
-cd services/microservice-generator
-npm start
+# Run worker
+npm run start:worker
 
 
-Logs will appear in Kibana under the logs-* index pattern.
+Make sure Elasticsearch and Kibana are running locally on default ports.
 
-🪵 Log Format
+4. Example
 
-Each log document includes:
+A sample log document stored in Elasticsearch:
 
 {
-  "timestamp": "2025-10-26T15:34:07.613Z",
-  "service": "auth-service",
+  "service": "payment-service",
   "level": "INFO",
-  "message": "synthetic log message",
-  "latencyMs": 123.4,
-  "attrs": { "route": "/api/test" }
+  "message": "synthetic log from payment-service",
+  "timestamp": "2025-10-26T15:34:07Z",
+  "latencyMs": 257.9
 }
-
-📊 Viewing in Kibana
-
-Go to Stack Management → Index Patterns
-
-Create a data view for logs-*
-
-Open Discover to explore incoming logs
